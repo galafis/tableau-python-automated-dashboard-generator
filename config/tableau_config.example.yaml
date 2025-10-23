@@ -1,0 +1,35 @@
+# Tableau Server Configuration Template
+# Copy this file to tableau_config.yaml and update with your settings
+
+server:
+  url: "https://tableau.yourcompany.com"
+  site_id: "your-site-id"  # Leave empty ("") for default site
+  api_version: "3.19"
+
+credentials:
+  # Option 1: Username/Password (not recommended for production)
+  username: "your-username"
+  password: "your-password"
+
+  # Option 2: Personal Access Token (recommended)
+  # token_name: "your-token-name"
+  # token_value: "your-token-value"
+
+projects:
+  # Define your project mappings
+  development: "Development"
+  qa: "Quality Assurance"
+  production: "Production"
+  analytics: "Analytics"
+
+# Optional: Define default settings
+defaults:
+  overwrite: true
+  show_tabs: true
+  allow_refresh: true
+
+# Optional: Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "tableau_automation.log"
+  console: true
