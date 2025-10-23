@@ -6,15 +6,14 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
 
-# Add src to path
+# Add src to path (must be before importing tableau_automation)
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from tableau_automation.tableau_publisher import TableauPublisher
+from tableau_automation.tableau_publisher import TableauPublisher  # noqa: E402
 
 
 class TestTableauPublisher:

@@ -62,17 +62,19 @@ git checkout -b feature/your-feature-name
 
 ### 4. Run Code Quality Checks
 
+All code quality tools use centralized configuration from `setup.cfg` and `pyproject.toml`:
+
 ```bash
 # Format code
 black src tests
 isort src tests
 
-# Lint code
-flake8 src tests --max-line-length=100
-pylint src --max-line-length=100
+# Lint code (uses setup.cfg for configuration)
+flake8 src tests
+pylint src
 
 # Type checking (optional but recommended)
-mypy src --ignore-missing-imports
+mypy src
 ```
 
 ### 5. Run Tests with Coverage
@@ -81,7 +83,7 @@ mypy src --ignore-missing-imports
 pytest tests/ -v --cov=src --cov-report=html --cov-report=term-missing
 ```
 
-Aim for >80% code coverage.
+Aim for >75% code coverage (current: 75%, target: 80%+).
 
 ### 6. Commit Your Changes
 
