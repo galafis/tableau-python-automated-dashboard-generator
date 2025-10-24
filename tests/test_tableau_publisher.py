@@ -95,9 +95,7 @@ class TestTableauPublisher:
         )
 
         # Create sample DataFrame
-        df = pd.DataFrame(
-            {"Date": pd.date_range("2024-01-01", periods=10), "Value": range(10)}
-        )
+        df = pd.DataFrame({"Date": pd.date_range("2024-01-01", periods=10), "Value": range(10)})
 
         output_path = str(tmp_path / "test_extract.hyper")
         result_path = publisher.create_hyper_extract(df, output_path, table_name="TestTable")
