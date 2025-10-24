@@ -20,9 +20,7 @@ class TableauPublisher:
     - pantab for creating .hyper files
     """
 
-    def __init__(
-        self, server_url: str, username: str, password: str, site_id: str = ""
-    ):
+    def __init__(self, server_url: str, username: str, password: str, site_id: str = ""):
         """
         Initialize Tableau Server connection.
 
@@ -63,9 +61,7 @@ class TableauPublisher:
             self.connected = False
             print("✓ Disconnected")
 
-    def create_hyper_extract(
-        self, df: pd.DataFrame, output_path: str, table_name: str = "Extract"
-    ):
+    def create_hyper_extract(self, df: pd.DataFrame, output_path: str, table_name: str = "Extract"):
         """
         Create a Tableau .hyper extract from a Pandas DataFrame.
 
@@ -98,9 +94,7 @@ class TableauPublisher:
         print(f"✓ Extract created: {csv_path}")
         return csv_path
 
-    def publish_workbook(
-        self, workbook_path: str, project_name: str, workbook_name: str = None
-    ):
+    def publish_workbook(self, workbook_path: str, project_name: str, workbook_name: str = None):
         """
         Publish a Tableau workbook to Tableau Server.
 
@@ -122,9 +116,7 @@ class TableauPublisher:
         ConnectionError : If not connected to Tableau Server
         """
         if not self.connected:
-            raise ConnectionError(
-                "Not connected to Tableau Server. Call connect() first."
-            )
+            raise ConnectionError("Not connected to Tableau Server. Call connect() first.")
 
         wb_name = workbook_name or os.path.basename(workbook_path)
 
@@ -165,9 +157,7 @@ class TableauPublisher:
         ConnectionError : If not connected to Tableau Server
         """
         if not self.connected:
-            raise ConnectionError(
-                "Not connected to Tableau Server. Call connect() first."
-            )
+            raise ConnectionError("Not connected to Tableau Server. Call connect() first.")
 
         ds_name = datasource_name or os.path.basename(datasource_path)
 
@@ -202,9 +192,7 @@ class TableauPublisher:
         ConnectionError : If not connected to Tableau Server
         """
         if not self.connected:
-            raise ConnectionError(
-                "Not connected to Tableau Server. Call connect() first."
-            )
+            raise ConnectionError("Not connected to Tableau Server. Call connect() first.")
 
         print(f"Refreshing extract for datasource: {datasource_id}")
 
@@ -235,9 +223,7 @@ class TableauPublisher:
         ConnectionError : If not connected to Tableau Server
         """
         if not self.connected:
-            raise ConnectionError(
-                "Not connected to Tableau Server. Call connect() first."
-            )
+            raise ConnectionError("Not connected to Tableau Server. Call connect() first.")
 
         filter_msg = f" in project: {project_name}" if project_name else ""
         print(f"Listing workbooks{filter_msg}...")
