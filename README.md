@@ -1,5 +1,10 @@
 # Tableau Dashboard Automation with Python
 
+[![Tests](https://github.com/galafis/tableau-python-automated-dashboard-generator/workflows/Tests/badge.svg)](https://github.com/galafis/tableau-python-automated-dashboard-generator/actions)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Tableau](https://img.shields.io/badge/Tableau-E97627?style=for-the-badge&logo=tableau&logoColor=white) ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white) ![Automation](https://img.shields.io/badge/Automation-00C853?style=for-the-badge)
 
 ---
@@ -541,12 +546,57 @@ O Hyper é o motor de dados do Tableau:
 - [tableauserverclient Documentation](https://tableau.github.io/server-client-python/)
 - [Hyper API Documentation](https://help.tableau.com/current/api/hyper_api/en-us/index.html)
 
+### 🧪 Testes e Qualidade
+
+Este projeto inclui uma suíte completa de testes e ferramentas de qualidade de código:
+
+```bash
+# Executar todos os testes
+pytest tests/ -v
+
+# Executar testes com relatório de cobertura
+pytest tests/ --cov=src --cov-report=html --cov-report=term-missing
+
+# Verificar qualidade do código
+black src tests  # Formatação
+flake8 src tests  # Linting
+pylint src  # Análise estática
+```
+
+**Status dos Testes:** ✅ 19/19 testes passando (100%)
+**Cobertura de Código:** 75%
+**Qualidade (Pylint):** 9.89/10
+
+### 🤝 Como Contribuir
+
+Contribuições são bem-vindas! Por favor, leia nosso [Guia de Contribuição](CONTRIBUTING.md) para detalhes sobre:
+
+- Como configurar o ambiente de desenvolvimento
+- Padrões de código e estilo
+- Como executar testes
+- Processo de submissão de Pull Requests
+
+**Passos rápidos:**
+
+1. Fork o repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Add: MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
+
+### 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
 ### 🎯 Próximos Passos
 
+- [x] ✅ Adicionar suíte completa de testes
+- [x] ✅ Implementar CI/CD com GitHub Actions
+- [x] ✅ Melhorar qualidade do código (9.89/10)
 - [ ] Adicionar suporte para Tableau Online
 - [ ] Implementar logging estruturado
 - [ ] Criar CLI para operações comuns
-- [ ] Adicionar testes de integração
+- [ ] Adicionar testes de integração com Tableau Server real
 - [ ] Implementar cache de autenticação
 
 ---
@@ -572,6 +622,33 @@ python examples/publish_workbook.py
 - ✅ Integrate Tableau with data pipelines
 - ✅ Manage permissions programmatically
 - ✅ Build DataOps workflows
+
+### 🧪 Testing & Quality
+
+**Test Status:** ✅ 19/19 tests passing (100%)
+**Code Coverage:** 75%
+**Code Quality (Pylint):** 9.89/10
+
+```bash
+# Run tests
+pytest tests/ -v --cov=src --cov-report=term-missing
+
+# Code quality checks
+black src tests && flake8 src tests && pylint src
+```
+
+### 🤝 Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
+
+- Development environment setup
+- Code style and standards
+- Testing requirements
+- Pull request process
+
+### 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
