@@ -1,6 +1,5 @@
 # Tableau Dashboard Automation with Python
 
-[![Tests](https://github.com/galafis/tableau-python-automated-dashboard-generator/workflows/Tests/badge.svg)](https://github.com/galafis/tableau-python-automated-dashboard-generator/actions)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -11,11 +10,11 @@
 
 ## 🇧🇷 Automação de Dashboards Tableau com Python
 
-Este repositório fornece um **framework completo e profissional** para automação de tarefas no **Tableau Server** utilizando Python. A solução permite criar, publicar, atualizar e gerenciar dashboards e fontes de dados de forma programática, integrando o Tableau em pipelines modernos de **DataOps** e **Analytics Engineering**.
+Este repositório fornece um framework para automação de tarefas no **Tableau Server** utilizando Python. A solução permite criar, publicar, atualizar e gerenciar dashboards e fontes de dados de forma programática, integrando o Tableau em pipelines de **DataOps** e **Analytics Engineering**.
 
 ### 🎯 Objetivo
 
-Demonstrar como a **Tableau Server REST API** pode ser usada para eliminar tarefas manuais repetitivas, permitindo que equipes de dados implementem workflows automatizados, versionamento de dashboards e integração contínua (CI/CD) para analytics.
+Demonstrar como a **Tableau Server REST API** pode ser usada para reduzir tarefas manuais repetitivas, permitindo que equipes de dados implementem workflows automatizados e versionamento de dashboards.
 
 ### 🌟 Por que Automatizar o Tableau?
 
@@ -23,20 +22,19 @@ A automação do Tableau traz benefícios significativos para equipes de dados:
 
 | Benefício | Impacto |
 |-----------|---------|
-| **Economia de Tempo** | Reduz 80%+ do tempo gasto em tarefas manuais |
-| **Consistência** | Elimina erros humanos em publicações |
-| **Escalabilidade** | Gerencia centenas de dashboards simultaneamente |
+| **Economia de Tempo** | Reduz tempo gasto em tarefas manuais de publicação |
+| **Consistência** | Diminui erros humanos em publicações |
+| **Escalabilidade** | Gerencia múltiplos dashboards simultaneamente |
 | **Versionamento** | Controle de versão via Git para dashboards |
-| **CI/CD** | Deploy automatizado de dashboards em produção |
 | **Monitoramento** | Alertas automáticos para falhas de refresh |
 
 ### 📊 Casos de Uso Reais
 
-1. **BI Automation**: Publicar automaticamente 50+ dashboards toda segunda-feira às 6h
+1. **BI Automation**: Publicar dashboards de forma programática em horários definidos
 2. **Data Refresh**: Atualizar extracts após conclusão de pipelines ETL
-3. **Multi-Environment**: Promover dashboards de DEV → QA → PROD automaticamente
-4. **Backup & Recovery**: Fazer backup diário de todos os workbooks
-5. **Bulk Operations**: Atualizar permissões de 100+ dashboards em segundos
+3. **Multi-Environment**: Promover dashboards de DEV → QA → PROD
+4. **Backup & Recovery**: Fazer backup de workbooks
+5. **Bulk Operations**: Atualizar permissões de múltiplos dashboards de uma vez
 
 ### 🏗️ Arquitetura do Framework
 
@@ -80,11 +78,12 @@ tableau-python-automated-dashboard-generator/
 ├── examples/
 │   ├── publish_workbook.py           # Exemplo de publicação
 │   ├── refresh_extract.py            # Exemplo de refresh
+│   ├── etl_pipeline.py              # Pipeline ETL completo
 │   └── bulk_operations.py            # Operações em lote
 ├── tests/
-│   └── test_tableau_api.py           # Testes unitários
+│   └── test_tableau_publisher.py     # Testes unitários
 ├── config/
-│   └── tableau_config.yaml           # Configuração do servidor
+│   └── tableau_config.example.yaml   # Template de configuração
 ├── requirements.txt                  # Dependências Python
 └── README.md
 ```
@@ -141,160 +140,42 @@ python examples/refresh_extract.py
 
 ### 💻 Código Principal: TableauPublisher
 
-```python
-import tableauserverclient as TSC
-import pandas as pd
-from pathlib import Path
+O módulo principal está em `src/tableau_automation/tableau_publisher.py`. Abaixo, um resumo da API:
 
-class TableauPublisher:
-    """
-    Framework para automação do Tableau Server.
-    
-    Funcionalidades:
-    - Autenticação com Tableau Server
-    - Publicação de workbooks e data sources
-    - Refresh de extracts
-    - Gerenciamento de permissões
-    """
-    
-    def __init__(self, server_url, site_id, username, password):
-        self.server_url = server_url
-        self.site_id = site_id
-        self.username = username
-        self.password = password
-        self.server = None
-        self.auth = None
-    
-    def connect(self):
-        """Conectar ao Tableau Server."""
-        self.server = TSC.Server(self.server_url, use_server_version=True)
-        self.auth = TSC.TableauAuth(
-            self.username, 
-            self.password, 
-            site_id=self.site_id
-        )
-        self.server.auth.sign_in(self.auth)
-        print(f"✓ Connected to {self.server_url}")
-    
-    def publish_workbook(self, workbook_path, project_name, 
-                        overwrite=True, show_tabs=True):
-        """
-        Publicar workbook no Tableau Server.
-        
-        Args:
-            workbook_path: Caminho para o arquivo .twb ou .twbx
-            project_name: Nome do projeto no Tableau
-            overwrite: Se deve sobrescrever workbook existente
-            show_tabs: Se deve mostrar as tabs do workbook
-        
-        Returns:
-            workbook_item: Objeto do workbook publicado
-        """
-        # Encontrar projeto
-        all_projects, _ = self.server.projects.get()
-        project = next((p for p in all_projects if p.name == project_name), None)
-        
-        if not project:
-            raise ValueError(f"Project '{project_name}' not found")
-        
-        # Configurar opções de publicação
-        publish_mode = TSC.Server.PublishMode.Overwrite if overwrite else TSC.Server.PublishMode.CreateNew
-        
-        # Criar workbook item
-        workbook_item = TSC.WorkbookItem(project.id)
-        workbook_item.show_tabs = show_tabs
-        
-        # Publicar
-        print(f"Publishing {workbook_path} to {project_name}...")
-        workbook_item = self.server.workbooks.publish(
-            workbook_item,
-            workbook_path,
-            publish_mode
-        )
-        
-        print(f"✓ Workbook published: {workbook_item.name} (ID: {workbook_item.id})")
-        return workbook_item
-    
-    def create_hyper_extract(self, df, output_path, table_name="Extract"):
-        """
-        Criar arquivo .hyper (Tableau extract) a partir de DataFrame.
-        
-        Args:
-            df: Pandas DataFrame
-            output_path: Caminho para salvar o arquivo .hyper
-            table_name: Nome da tabela no extract
-        """
-        from tableauhyperapi import HyperProcess, Telemetry, Connection, CreateMode, \
-            NOT_NULLABLE, NULLABLE, SqlType, TableDefinition, Inserter, escape_name, escape_string_literal
-        
-        # Mapear tipos Pandas → Hyper
-        type_mapping = {
-            'int64': SqlType.big_int(),
-            'float64': SqlType.double(),
-            'object': SqlType.text(),
-            'datetime64[ns]': SqlType.timestamp(),
-            'bool': SqlType.bool()
-        }
-        
-        # Criar definição da tabela
-        columns = []
-        for col_name, dtype in df.dtypes.items():
-            sql_type = type_mapping.get(str(dtype), SqlType.text())
-            columns.append(TableDefinition.Column(col_name, sql_type, NULLABLE))
-        
-        table_def = TableDefinition(
-            table_name=table_name,
-            columns=columns
-        )
-        
-        # Criar arquivo .hyper
-        with HyperProcess(telemetry=Telemetry.DO_NOT_SEND_USAGE_DATA_TO_TABLEAU) as hyper:
-            with Connection(
-                endpoint=hyper.endpoint,
-                database=output_path,
-                create_mode=CreateMode.CREATE_AND_REPLACE
-            ) as connection:
-                
-                connection.catalog.create_table(table_def)
-                
-                # Inserir dados
-                with Inserter(connection, table_def) as inserter:
-                    for row in df.itertuples(index=False):
-                        inserter.add_row(row)
-                    inserter.execute()
-        
-        print(f"✓ Hyper extract created: {output_path}")
-    
-    def refresh_extract(self, datasource_id):
-        """
-        Atualizar extract de uma data source.
-        
-        Args:
-            datasource_id: ID da data source no Tableau
-        """
-        print(f"Refreshing extract for datasource {datasource_id}...")
-        self.server.datasources.refresh(datasource_id)
-        print(f"✓ Extract refresh initiated")
-    
-    def download_workbook(self, workbook_id, output_path):
-        """
-        Fazer download de um workbook do Tableau Server.
-        
-        Args:
-            workbook_id: ID do workbook
-            output_path: Caminho para salvar o arquivo
-        """
-        print(f"Downloading workbook {workbook_id}...")
-        file_path = self.server.workbooks.download(workbook_id, filepath=output_path)
-        print(f"✓ Workbook downloaded: {file_path}")
-        return file_path
-    
-    def disconnect(self):
-        """Desconectar do Tableau Server."""
-        if self.server:
-            self.server.auth.sign_out()
-            print("✓ Disconnected from Tableau Server")
+```python
+from tableau_automation import TableauPublisher
+
+# Inicializar
+publisher = TableauPublisher(
+    server_url="https://tableau.example.com",
+    username="admin",
+    password="password",
+    site_id="analytics"
+)
+
+# Conectar ao servidor
+publisher.connect()
+
+# Criar extract a partir de um DataFrame
+publisher.create_hyper_extract(df, "output/data.hyper", table_name="Sales")
+
+# Publicar workbook
+result = publisher.publish_workbook("dashboard.twbx", project_name="Production")
+
+# Publicar data source
+result = publisher.publish_datasource("data.tdsx", project_name="Analytics")
+
+# Refresh de extract
+publisher.refresh_extract(datasource_id="ds-123")
+
+# Listar workbooks
+workbooks = publisher.list_workbooks(project_name="Analytics")
+
+# Desconectar
+publisher.disconnect()
 ```
+
+> **Nota:** Este é um framework de demonstração que ilustra os padrões de automação do Tableau Server. Para uso em produção, integre com [tableauserverclient](https://tableau.github.io/server-client-python/) (TSC) e [pantab](https://pantab.readthedocs.io/) / [tableauhyperapi](https://help.tableau.com/current/api/hyper_api/en-us/index.html) para operações reais.
 
 ### 📝 Exemplos de Uso
 
@@ -313,13 +194,13 @@ publisher = TableauPublisher(
 publisher.connect()
 
 # Publicar workbook
-workbook = publisher.publish_workbook(
+result = publisher.publish_workbook(
     workbook_path="dashboards/sales_dashboard.twbx",
     project_name="Production",
-    overwrite=True
+    workbook_name="Sales Dashboard"
 )
 
-print(f"Dashboard URL: {publisher.server_url}/views/{workbook.name}")
+print(f"Published: {result['workbook_name']}")
 
 publisher.disconnect()
 ```
@@ -447,11 +328,13 @@ pytest --cov=src tests/
 
 # Testar conexão com Tableau Server
 python -c "from src.tableau_automation.tableau_publisher import TableauPublisher; \
-           p = TableauPublisher('https://tableau.company.com', 'site', 'user', 'pass'); \
-           p.connect(); print('✓ Connection successful')"
+           p = TableauPublisher('https://tableau.company.com', 'user', 'pass', 'site'); \
+           p.connect(); print('Connection successful')"
 ```
 
 ### 📊 Funcionalidades Avançadas
+
+> Os exemplos abaixo usam a biblioteca `tableauserverclient` (TSC) diretamente. Servem como referência para quando você integrar o framework com uma instalação real do Tableau Server.
 
 #### 1. Gerenciamento de Permissões
 
@@ -525,9 +408,9 @@ A API REST do Tableau permite operações programáticas:
 
 O Hyper é o motor de dados do Tableau:
 
-- **Performance**: 10-100x mais rápido que TDE
-- **Compression**: Reduz tamanho dos extracts em 50-70%
-- **Scalability**: Suporta bilhões de linhas
+- **Performance**: Significativamente mais rápido que o antigo formato TDE
+- **Compression**: Reduz o tamanho dos extracts em relação ao TDE
+- **Scalability**: Suporta datasets grandes
 - **Python Integration**: Criar extracts programaticamente
 
 ### 💡 Melhores Práticas
@@ -563,9 +446,7 @@ flake8 src tests  # Linting
 pylint src  # Análise estática
 ```
 
-**Status dos Testes:** ✅ 19/19 testes passando (100%)
-**Cobertura de Código:** 75%
-**Qualidade (Pylint):** 9.89/10
+Para verificar o estado dos testes e a qualidade do código, execute os comandos acima.
 
 ### 🤝 Como Contribuir
 
@@ -590,9 +471,7 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ### 🎯 Próximos Passos
 
-- [x] ✅ Adicionar suíte completa de testes
-- [x] ✅ Implementar CI/CD com GitHub Actions
-- [x] ✅ Melhorar qualidade do código (9.89/10)
+- [x] Adicionar suíte de testes
 - [ ] Adicionar suporte para Tableau Online
 - [ ] Implementar logging estruturado
 - [ ] Criar CLI para operações comuns
@@ -603,7 +482,7 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 🇬🇧 Tableau Dashboard Automation with Python
 
-This repository provides a **complete and professional framework** for automating tasks on **Tableau Server** using Python. The solution enables creating, publishing, updating, and managing dashboards and data sources programmatically, integrating Tableau into modern **DataOps** and **Analytics Engineering** pipelines.
+This repository provides a framework for automating tasks on **Tableau Server** using Python. The solution enables creating, publishing, updating, and managing dashboards and data sources programmatically, integrating Tableau into **DataOps** and **Analytics Engineering** pipelines.
 
 ### 🚀 Quick Start
 
@@ -616,18 +495,15 @@ python examples/publish_workbook.py
 
 ### 🎓 Key Learnings
 
-- ✅ Automate Tableau Server operations with Python
-- ✅ Create Hyper extracts from Pandas DataFrames
-- ✅ Implement CI/CD for analytics dashboards
-- ✅ Integrate Tableau with data pipelines
-- ✅ Manage permissions programmatically
-- ✅ Build DataOps workflows
+- Automate Tableau Server operations with Python
+- Create Hyper extracts from Pandas DataFrames
+- Integrate Tableau with data pipelines
+- Manage permissions programmatically
+- Build DataOps workflows
 
 ### 🧪 Testing & Quality
 
-**Test Status:** ✅ 19/19 tests passing (100%)
-**Code Coverage:** 75%
-**Code Quality (Pylint):** 9.89/10
+Run the commands below to verify tests and code quality locally.
 
 ```bash
 # Run tests
@@ -654,4 +530,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Author:** Gabriel Demetrios Lafis  
 **License:** MIT  
-**Last Updated:** October 2025
+**Last Updated:** February 2026

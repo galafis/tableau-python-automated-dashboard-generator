@@ -83,7 +83,7 @@ mypy src
 pytest tests/ -v --cov=src --cov-report=html --cov-report=term-missing
 ```
 
-Aim for >75% code coverage (current: 75%, target: 80%+).
+Aim for good code coverage. Run the coverage report to see current status.
 
 ### 6. Commit Your Changes
 
