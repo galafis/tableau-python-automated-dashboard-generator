@@ -265,7 +265,7 @@ def example_pipeline():
     try:
         # Create sample data
         print("\n1. Creating sample data...")
-        import numpy as np
+        import numpy as np  # noqa: E402 — lazy import for demo only
 
         df = pd.DataFrame(
             {
