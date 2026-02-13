@@ -1,65 +1,194 @@
-# 📊 Tableau Python Automated Dashboard Generator
+# Tableau Python Automated Dashboard Generator
 
-> Automated dashboard generation tool combining Tableau and Python. Creates interactive visualizations, scheduled reports, and data-driven dashboards programmatically.
+Framework de demonstracao para automacao de operacoes do Tableau Server usando Python. Implementa o padrao de API do Tableau Server com metodos stub — projetado como referencia de arquitetura, nao como integracao funcional.
 
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://img.shields.io/badge/)
-[![NumPy](https://img.shields.io/badge/NumPy-1.26-013243.svg)](https://img.shields.io/badge/)
-[![Pandas](https://img.shields.io/badge/Pandas-2.2-150458.svg)](https://img.shields.io/badge/)
+Demonstration framework for Tableau Server operations automation using Python. Implements the Tableau Server API pattern with stub methods — designed as an architecture reference, not a working integration.
+
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB.svg)](https://python.org)
+[![Pandas](https://img.shields.io/badge/Pandas-2.0+-150458.svg)](https://pandas.pydata.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[English](#english) | [Português](#português)
+[Portugues](#portugues) | [English](#english)
+
+---
+
+## Portugues
+
+### Visao Geral
+
+Este repositorio contem um **framework de demonstracao** que simula operacoes do Tableau Server. A classe `TableauPublisher` define a interface para publicacao de workbooks, datasources, criacao de extracts e refresh — mas **todos os metodos sao stubs** que imprimem mensagens e retornam dados mockados.
+
+> **Nota importante**: Nenhuma conexao real com o Tableau Server e estabelecida. O metodo `create_hyper_extract()` salva um arquivo CSV (nao um `.hyper` real). Para integracao real, use [`tableauserverclient`](https://tableau.github.io/server-client-python/) e [`pantab`](https://pantab.readthedocs.io/).
+
+### Arquitetura
+
+```mermaid
+graph TB
+    subgraph Core["TableauPublisher"]
+        A[connect / disconnect]
+        B[publish_workbook]
+        C[publish_datasource]
+        D[create_hyper_extract]
+        E[refresh_extract]
+        F[list_workbooks]
+    end
+
+    subgraph Exemplos["Exemplos"]
+        G[etl_pipeline.py]
+        H[publish_workbook.py]
+        I[refresh_extract.py]
+        J[bulk_operations.py]
+    end
+
+    G --> A
+    G --> D
+    G --> C
+    H --> A
+    H --> B
+    I --> A
+    I --> E
+    J --> A
+    J --> F
+    J --> E
+
+    style Core fill:#e1f5fe
+    style Exemplos fill:#f3e5f5
+```
+
+### Funcionalidades (Stub/Demonstracao)
+
+| Metodo | O que faz na pratica |
+|--------|---------------------|
+| `connect()` | Define `self.connected = True` e imprime mensagem |
+| `disconnect()` | Define `self.connected = False` |
+| `create_hyper_extract()` | Salva DataFrame como CSV (nao cria `.hyper`) |
+| `publish_workbook()` | Retorna dict com timestamp (nao publica nada) |
+| `publish_datasource()` | Retorna dict com timestamp (nao publica nada) |
+| `refresh_extract()` | Retorna `{"status": "pending"}` (nao faz refresh) |
+| `list_workbooks()` | Retorna 2 workbooks hardcoded (mock) |
+
+### Inicio Rapido
+
+```bash
+# Clonar o repositorio
+git clone https://github.com/galafis/tableau-python-automated-dashboard-generator.git
+cd tableau-python-automated-dashboard-generator
+
+# Criar e ativar ambiente virtual
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Executar o pipeline de exemplo
+python src/tableau_automation/tableau_publisher.py
+
+# Executar o exemplo de ETL
+python examples/etl_pipeline.py
+```
+
+### Testes
+
+```bash
+# Executar todos os testes
+pytest
+
+# Com cobertura
+pytest --cov=src --cov-report=term-missing
+```
+
+### Estrutura do Projeto
+
+```
+tableau-python-automated-dashboard-generator/
+├── src/
+│   ├── __init__.py
+│   └── tableau_automation/
+│       ├── __init__.py
+│       └── tableau_publisher.py    # Classe TableauPublisher (stub)
+├── examples/
+│   ├── etl_pipeline.py             # ETL: gerar dados + salvar CSV + publicar (mock)
+│   ├── publish_workbook.py         # Publicar workbook (mock)
+│   ├── refresh_extract.py          # Refresh de extract (mock)
+│   └── bulk_operations.py          # Operacoes em lote (mock)
+├── tests/
+│   ├── __init__.py
+│   └── test_tableau_publisher.py   # 18 testes unitarios
+├── requirements.txt
+├── pyproject.toml
+├── setup.py
+├── setup.cfg
+└── LICENSE
+```
+
+### Stack Tecnologica
+
+| Tecnologia | Uso real |
+|------------|----------|
+| **Python** | Linguagem principal |
+| **Pandas** | Criacao de DataFrames e exportacao CSV |
+| **NumPy** | Geracao de dados aleatorios nos exemplos |
+| **pytest** | Framework de testes |
 
 ---
 
 ## English
 
-### 🎯 Overview
+### Overview
 
-**Tableau Python Automated Dashboard Generator** is a production-grade Python application that showcases modern software engineering practices including clean architecture, comprehensive testing, containerized deployment, and CI/CD readiness.
+This repository contains a **demonstration framework** that simulates Tableau Server operations. The `TableauPublisher` class defines the interface for publishing workbooks, datasources, creating extracts, and refreshing — but **all methods are stubs** that print messages and return mock data.
 
-The codebase comprises **1,006 lines** of source code organized across **10 modules**, following industry best practices for maintainability, scalability, and code quality.
+> **Important note**: No actual connection to Tableau Server is established. The `create_hyper_extract()` method saves a CSV file (not a real `.hyper`). For real integration, use [`tableauserverclient`](https://tableau.github.io/server-client-python/) and [`pantab`](https://pantab.readthedocs.io/).
 
-### ✨ Key Features
-
-- **📊 Interactive Visualizations**: Dynamic charts with real-time data updates
-- **🎨 Responsive Design**: Adaptive layout for desktop and mobile devices
-- **📈 Data Aggregation**: Multi-dimensional data analysis and filtering
-- **📥 Export Capabilities**: PDF, CSV, and image export for reports
-- **🏗️ Object-Oriented**: 2 core classes with clean architecture
-
-### 🏗️ Architecture
+### Architecture
 
 ```mermaid
 graph TB
-    subgraph Core["🏗️ Core"]
-        A[Main Module]
-        B[Business Logic]
-        C[Data Processing]
+    subgraph Core["TableauPublisher"]
+        A[connect / disconnect]
+        B[publish_workbook]
+        C[publish_datasource]
+        D[create_hyper_extract]
+        E[refresh_extract]
+        F[list_workbooks]
     end
-    
-    subgraph Support["🔧 Support"]
-        D[Configuration]
-        E[Utilities]
-        F[Tests]
+
+    subgraph Examples["Examples"]
+        G[etl_pipeline.py]
+        H[publish_workbook.py]
+        I[refresh_extract.py]
+        J[bulk_operations.py]
     end
-    
-    A --> B --> C
-    D --> A
-    E --> B
-    F -.-> B
-    
+
+    G --> A
+    G --> D
+    G --> C
+    H --> A
+    H --> B
+    I --> A
+    I --> E
+    J --> A
+    J --> F
+    J --> E
+
     style Core fill:#e1f5fe
-    style Support fill:#f3e5f5
+    style Examples fill:#f3e5f5
 ```
 
-### 🚀 Quick Start
+### Features (Stub/Demonstration)
 
-#### Prerequisites
+| Method | What it actually does |
+|--------|----------------------|
+| `connect()` | Sets `self.connected = True` and prints a message |
+| `disconnect()` | Sets `self.connected = False` |
+| `create_hyper_extract()` | Saves DataFrame as CSV (does not create `.hyper`) |
+| `publish_workbook()` | Returns dict with timestamp (does not publish) |
+| `publish_datasource()` | Returns dict with timestamp (does not publish) |
+| `refresh_extract()` | Returns `{"status": "pending"}` (no actual refresh) |
+| `list_workbooks()` | Returns 2 hardcoded mock workbooks |
 
-- Python 3.12+
-- pip (Python package manager)
-
-#### Installation
+### Quick Start
 
 ```bash
 # Clone the repository
@@ -68,227 +197,69 @@ cd tableau-python-automated-dashboard-generator
 
 # Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run the example pipeline
+python src/tableau_automation/tableau_publisher.py
+
+# Run the ETL example
+python examples/etl_pipeline.py
 ```
 
-#### Running
-
-```bash
-# Run the application
-python src/main.py
-```
-
-### 🧪 Testing
+### Testing
 
 ```bash
 # Run all tests
 pytest
 
-# Run with coverage report
-pytest --cov --cov-report=html
-
-# Run specific test module
-pytest tests/test_main.py -v
-
-# Run with detailed output
-pytest -v --tb=short
+# With coverage
+pytest --cov=src --cov-report=term-missing
 ```
 
-### 📁 Project Structure
+### Project Structure
 
 ```
 tableau-python-automated-dashboard-generator/
-├── config/        # Configuration
-│   └── tableau_config.example.yaml
-├── examples/
-│   ├── bulk_operations.py
-│   ├── etl_pipeline.py
-│   ├── publish_workbook.py
-│   └── refresh_extract.py
-├── images/
-├── src/          # Source code
-│   ├── tableau_automation/
-│   │   ├── __init__.py
-│   │   └── tableau_publisher.py
-│   └── __init__.py
-├── tests/         # Test suite
+├── src/
 │   ├── __init__.py
-│   └── test_tableau_publisher.py
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── pyproject.toml
+│   └── tableau_automation/
+│       ├── __init__.py
+│       └── tableau_publisher.py    # TableauPublisher class (stub)
+├── examples/
+│   ├── etl_pipeline.py             # ETL: generate data + save CSV + publish (mock)
+│   ├── publish_workbook.py         # Publish workbook (mock)
+│   ├── refresh_extract.py          # Refresh extract (mock)
+│   └── bulk_operations.py          # Bulk operations (mock)
+├── tests/
+│   ├── __init__.py
+│   └── test_tableau_publisher.py   # 18 unit tests
 ├── requirements.txt
+├── pyproject.toml
+├── setup.py
 ├── setup.cfg
-└── setup.py
+└── LICENSE
 ```
 
-### 🛠️ Tech Stack
+### Tech Stack
 
-| Technology | Description | Role |
-|------------|-------------|------|
-| **Python** | Core Language | Primary |
-| **NumPy** | Numerical computing | Framework |
-| **Pandas** | Data manipulation library | Framework |
-
-### 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### 👤 Author
-
-**Gabriel Demetrios Lafis**
-- GitHub: [@galafis](https://github.com/galafis)
-- LinkedIn: [Gabriel Demetrios Lafis](https://linkedin.com/in/gabriel-demetrios-lafis)
+| Technology | Actual usage |
+|------------|-------------|
+| **Python** | Core language |
+| **Pandas** | DataFrame creation and CSV export |
+| **NumPy** | Random data generation in examples |
+| **pytest** | Testing framework |
 
 ---
 
-## Português
-
-### 🎯 Visão Geral
-
-**Tableau Python Automated Dashboard Generator** é uma aplicação Python de nível profissional que demonstra práticas modernas de engenharia de software, incluindo arquitetura limpa, testes abrangentes, implantação containerizada e prontidão para CI/CD.
-
-A base de código compreende **1,006 linhas** de código-fonte organizadas em **10 módulos**, seguindo as melhores práticas do setor para manutenibilidade, escalabilidade e qualidade de código.
-
-### ✨ Funcionalidades Principais
-
-- **📊 Interactive Visualizations**: Dynamic charts with real-time data updates
-- **🎨 Responsive Design**: Adaptive layout for desktop and mobile devices
-- **📈 Data Aggregation**: Multi-dimensional data analysis and filtering
-- **📥 Export Capabilities**: PDF, CSV, and image export for reports
-- **🏗️ Object-Oriented**: 2 core classes with clean architecture
-
-### 🏗️ Arquitetura
-
-```mermaid
-graph TB
-    subgraph Core["🏗️ Core"]
-        A[Main Module]
-        B[Business Logic]
-        C[Data Processing]
-    end
-    
-    subgraph Support["🔧 Support"]
-        D[Configuration]
-        E[Utilities]
-        F[Tests]
-    end
-    
-    A --> B --> C
-    D --> A
-    E --> B
-    F -.-> B
-    
-    style Core fill:#e1f5fe
-    style Support fill:#f3e5f5
-```
-
-### 🚀 Início Rápido
-
-#### Prerequisites
-
-- Python 3.12+
-- pip (Python package manager)
-
-#### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/galafis/tableau-python-automated-dashboard-generator.git
-cd tableau-python-automated-dashboard-generator
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-#### Running
-
-```bash
-# Run the application
-python src/main.py
-```
-
-### 🧪 Testing
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage report
-pytest --cov --cov-report=html
-
-# Run specific test module
-pytest tests/test_main.py -v
-
-# Run with detailed output
-pytest -v --tb=short
-```
-
-### 📁 Estrutura do Projeto
-
-```
-tableau-python-automated-dashboard-generator/
-├── config/        # Configuration
-│   └── tableau_config.example.yaml
-├── examples/
-│   ├── bulk_operations.py
-│   ├── etl_pipeline.py
-│   ├── publish_workbook.py
-│   └── refresh_extract.py
-├── images/
-├── src/          # Source code
-│   ├── tableau_automation/
-│   │   ├── __init__.py
-│   │   └── tableau_publisher.py
-│   └── __init__.py
-├── tests/         # Test suite
-│   ├── __init__.py
-│   └── test_tableau_publisher.py
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── pyproject.toml
-├── requirements.txt
-├── setup.cfg
-└── setup.py
-```
-
-### 🛠️ Stack Tecnológica
-
-| Tecnologia | Descrição | Papel |
-|------------|-----------|-------|
-| **Python** | Core Language | Primary |
-| **NumPy** | Numerical computing | Framework |
-| **Pandas** | Data manipulation library | Framework |
-
-### 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar um Pull Request.
-
-### 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-### 👤 Autor
+### Author / Autor
 
 **Gabriel Demetrios Lafis**
 - GitHub: [@galafis](https://github.com/galafis)
 - LinkedIn: [Gabriel Demetrios Lafis](https://linkedin.com/in/gabriel-demetrios-lafis)
+
+### License / Licenca
+
+MIT License - see [LICENSE](LICENSE) for details.

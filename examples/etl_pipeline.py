@@ -10,7 +10,7 @@ This example demonstrates a complete pipeline:
 
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
