@@ -255,7 +255,7 @@ def example_pipeline():
     publisher = TableauPublisher(
         server_url="https://tableau.example.com",
         username="admin",
-        password="password",
+        password = os.getenv("PASSWORD"),
         site_id="analytics",
     )
 
