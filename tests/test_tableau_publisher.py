@@ -23,7 +23,7 @@ class TestTableauPublisher:
         """Set up test fixtures."""
         self.server_url = "https://tableau.test.com"
         self.username = "test_user"
-        self.password = "test_password"
+        self.password = os.getenv("TABLEAU_PASSWORD", "fixture_only")
         self.site_id = "test_site"
 
     def test_initialization(self):
