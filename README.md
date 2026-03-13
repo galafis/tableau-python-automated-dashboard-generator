@@ -7,6 +7,7 @@ Demonstration framework for Tableau Server operations automation using Python. I
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB.svg)](https://python.org)
 [![Pandas](https://img.shields.io/badge/Pandas-2.0+-150458.svg)](https://pandas.pydata.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker)](Dockerfile)
 
 [Portugues](#portugues) | [English](#english)
 
